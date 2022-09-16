@@ -1,15 +1,16 @@
 import random
+from general import flatten_list
 
 class TXT():
     def __init__(self, file_name):
         self.file_name = file_name
-        self.data = list()
+        self.data = []
     
     def read(self, remove_new_line_char=True, encoding=None):
         for line in open(file=self.file_name, mode='r', encoding=encoding).readlines():
             if remove_new_line_char:
                 line = line.replace('\n', '')
-            self.data.extend(line)
+            self.data.extend(flatten_list(line))
         return self
     
     def write(self, new_line_char=True, mode='w', encoding=None):
@@ -20,7 +21,7 @@ class TXT():
         return self
     
     def add_data(self, data):
-        self.data.extend(data)
+        self.data.extend(flatten_list(data))
         return self
     
     def drop_duplicate(self):
@@ -37,23 +38,3 @@ class TXT():
             if order.lower() in ['ascending', 'asc']: self.data.sort()
             elif order.lower() in ['descending', 'desc']: self.data.sort(reverse=True)
         return self
-
-# def txt_to_list(file_name, remove_duplicate=False, remove_new_line_char=True, shuffle=False, sort=None):
-#     lines = []
-#     for line in open(file_name, 'r').readlines():
-#         if remove_new_line_char:
-#             line = line.replace('\n', '')
-#         lines.append(line)
-#     if remove_duplicate: lines = list(set(lines))
-#     if shuffle: random.shuffle(lines)
-#     if sort != None:
-#         if sort.lower() in ['ascending', 'asc']: lines.sort()
-#         elif sort.lower() in ['descending', 'desc']: lines.sort(reverse=True)
-#     return lines
-
-# def list_to_txt(file, data, new_line_char=True, shuffle=False, sort=None):
-#     if shuffle: random.shuffle(data) 
-#     with open(file, 'w') as fp:
-#         for item in data:
-#             if new_line_char: fp.write(f"{item}\n")
-#             else: fp.write(f"{item}")
