@@ -1,5 +1,16 @@
 import random
+import pandas as pd
+
+from general import split
+from directory import mkdir
+from general import path_join
 from general import flatten_list
+
+def touch(path):
+    path = split(text=path, delimiters=['\\', '/'], remove_empty=False)
+    mkdir(path_join(path[:-1]))
+    open(path_join(path), 'w')
+    
 
 class TXT():
     def __init__(self, file_name):
@@ -35,6 +46,24 @@ class TXT():
 
     def sort(self, order=None):
         if order != None:
-            if order.lower() in ['ascending', 'asc']: self.data.sort()
-            elif order.lower() in ['descending', 'desc']: self.data.sort(reverse=True)
+            if order.lower().replace(' ', '') in ['ascending', 'asc']: self.data.sort()
+            elif order.lower().replace(' ', '') in ['descending', 'desc']: self.data.sort(reverse=True)
+        return self
+
+class CSV():
+    def __init__(self, file_name):
+        self.file_name = file_name
+        self.read()
+    
+    def read(self):
+        self.data = pd.read_csv(self.file_name, index_col=0)
+        return self
+
+    def drop_duplicate(self, save=True, file_name=None):
+        self.data = self.data[~self.data.index.duplicated()]
+        if save:
+            if file_name == None:
+                self.data.to_csv(self.file_name)
+            else:
+                self.data.to_csv(file_name)
         return self
