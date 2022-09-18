@@ -1,6 +1,6 @@
 import os
-from decorator import _list
-from general import path_join
+from .decorator import _list
+from .general import path_join
 
 @_list
 def mkdir(dir_list):

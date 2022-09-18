@@ -1,6 +1,6 @@
 import os
 import re
-from decorator import _list
+from .decorator import _list
 
 @_list
 def flatten_list(alist):
