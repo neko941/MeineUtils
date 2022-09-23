@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from MeineUtils.General import flatten_list
 
 class LinearRegression():
-    def __init__(self, file_path, epochs=50, minibatch_size=20, learning_rate = 0.00001, data_shuffle=False, delimiter=',', skip_header=1, loss_function=(lambda y_hat, y: (y_hat-y)**2), stochastic=False):
+    def __init__(self, file_path, epochs=50, minibatch_size=20, learning_rate = 0.001, data_shuffle=False, delimiter=',', skip_header=1, loss_function=(lambda y_hat, y: (y_hat-y)**2), stochastic=False):
         self.file_path = file_path
         self.epochs = epochs
         self.minibatch_size = minibatch_size
@@ -14,8 +14,11 @@ class LinearRegression():
 
         self.stochastic = stochastic
         if self.stochastic and self.data_shuffle:
+        # if self.stochastic and not self.data_shuffle: 
             print(f'data_shuffle: {self.data_shuffle} => False')
             self.data_shuffle = False
+            # print(f'data_shuffle: {self.data_shuffle} => True')
+            # self.data_shuffle = True
 
         if '.csv' in self.file_path:
             self.from_csv(file_path=self.file_path, delimiter=delimiter, skip_header=skip_header)
@@ -46,7 +49,7 @@ class LinearRegression():
         return x.dot(self.thetas)
 
     def main(self):
-        for epoch in range(self.epochs):
+        for _ in range(self.epochs):
             if self.data_shuffle:
                 shuffled_indices = np.random.permutation(self.max_feature)
                 X_b_shuffled = self.X_b[shuffled_indices]
@@ -58,9 +61,12 @@ class LinearRegression():
             _loss = []
             for i in range(0, self.max_feature, self.minibatch_size):
                 if self.stochastic:
-                    random_index = np.random.randint(np.maximum(self.max_feature-self.minibatch_size, 1))
-                    xi = X_b_shuffled[random_index:random_index+self.minibatch_size]
-                    yi = y_shuffled[random_index:random_index+self.minibatch_size]
+                    # random_index = np.random.randint(np.maximum(self.max_feature-self.minibatch_size, 1))
+                    # xi = X_b_shuffled[random_index:random_index+self.minibatch_size]
+                    # yi = y_shuffled[random_index:random_index+self.minibatch_size]
+                    random_index = np.random.randint(self.max_feature)
+                    xi = X_b_shuffled[random_index:random_index+1]
+                    yi = y_shuffled[random_index:random_index+1]
                 else:
                     xi = X_b_shuffled[i:i+self.minibatch_size]
                     yi = y_shuffled[i:i+self.minibatch_size]

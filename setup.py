@@ -1,6 +1,7 @@
-from setuptools import setup, find_packages
-import codecs
 import os
+import codecs
+
+from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -12,9 +13,9 @@ DESCRIPTION = 'My utils'
 # Setting up
 setup(
     name="MeineUtils",
-    version='0.0.7',
+    version='0.0.13',
     author="neko941 (Khoa Nguyen)",
-    url='https://github.com/neko941/VGU-CA',
+    url='https://github.com/neko941/MeineUtils',
     # author_email="",
     description=DESCRIPTION,
     long_description_content_type="text/markdown",

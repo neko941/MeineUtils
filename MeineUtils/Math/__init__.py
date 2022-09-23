@@ -9,3 +9,8 @@ from .general import (
     isfloat,
     isfloatfromstring
 )
+
+# from .statistics import (
+#     Mean,
+#     StandardDeviation
+# )
