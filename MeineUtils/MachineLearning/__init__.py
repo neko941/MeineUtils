@@ -6,3 +6,11 @@ from .linear_regression import (
 #     MinMaxScaler,
 #     StandardScaler
 # )
+
+from .bounding_box import (
+    BoundingBoxConverter
+)
+
+from .augmentation import (
+    RandomRotate
+)
