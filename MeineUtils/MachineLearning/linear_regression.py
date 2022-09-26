@@ -31,7 +31,7 @@ class LinearRegression():
     def from_csv(self, file_path, delimiter=',', skip_header=1):
         self.data = np.genfromtxt(file_path,  delimiter=delimiter, skip_header=skip_header)
         self.max_feature = self.data.shape[0]
-        if self.minibatch_size == 'all' or self.minibatch_size >= self.max_feature:
+        if self.minibatch_size == 'all' or self.minibatch_size > self.max_feature:
             print(f'minibatch_size: {self.minibatch_size} => {self.max_feature}')
             self.minibatch_size = self.max_feature
         self.X = self.data[:,:-1]
@@ -71,7 +71,7 @@ class LinearRegression():
                     xi = X_b_shuffled[i:i+self.minibatch_size]
                     yi = y_shuffled[i:i+self.minibatch_size]
                 
-                # tính output 
+                # compute output 
                 output = self.predict(xi)
                 
                 # loss
@@ -95,7 +95,7 @@ class LinearRegression():
     
     def plot(self, color="r", data_range=500):
         losses_list = flatten_list(self.losses_all)
-        if data_range >= len(losses_list):
+        if data_range > len(losses_list):
             print(f'data_range: {data_range} => {len(losses_list)}')
             data_range = len(losses_list)
         plt.plot(list(range(data_range)), flatten_list(self.losses_all)[:data_range], color=color)

@@ -4,7 +4,7 @@ import random
 import numpy as np
 
 """
-I yoink from https://blog.paperspace.com/data-augmentation-for-object-detection-rotation-and-shearing/
+I yoink it from https://blog.paperspace.com/data-augmentation-for-object-detection-rotation-and-shearing/
 """
 class RandomRotate(object):
     def __init__(self, angle=None):

@@ -13,7 +13,7 @@ DESCRIPTION = 'My utils'
 # Setting up
 setup(
     name="MeineUtils",
-    version='0.0.20',
+    version='0.0.21',
     author="neko941 (Khoa Nguyen)",
     url='https://github.com/neko941/MeineUtils',
     # author_email="",
