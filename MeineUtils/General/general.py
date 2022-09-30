@@ -1,12 +1,15 @@
 import os
 import re
 import time
+import numpy as np
 
 from .decorator import _list
 
 @_list
 def flatten_list(alist):
     flattened_list = []
+    if isinstance(alist, type(np.array([0]))):
+        alist = alist.tolist()
     for element in alist:
         if isinstance(element, list):
             flattened_list.extend(flatten_list(element))

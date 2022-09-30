@@ -1,6 +1,5 @@
-from .linear_regression import (
-    LinearRegression
-)
+from .linear_regression import LinearRegression
+from .logistic_regression import LogisticRegression
 
 # from .normalization import (
 #     MinMaxScaler,
@@ -13,4 +12,8 @@ from .bounding_box import (
 
 from .augmentation import (
     RandomRotate
+)
+
+from .NaturalLanguageProcessing import (
+    preprocessing
 )
