@@ -1,6 +1,5 @@
 import os
 import cv2
-import random
 import numpy as np
 
 """
@@ -11,7 +10,7 @@ class RandomRotate(object):
         if angle:
             self.angle = angle
         else:
-            self.angle = random.randint(1, 359)
+            self.angle = np.random.randint(1, 359)
         
     def get_enclosing_box(self, corners):
         x_ = corners[:,[0,2,4,6]]
@@ -130,7 +129,90 @@ class RandomRotate(object):
         bboxes = self.clip_box(bboxes, [0,0,w, h], 0.25)
 
         split_tup = os.path.splitext(img_path)
-        save_name = f'{split_tup[0]}-Rotation_{self.angle}{split_tup[1]}'
+        save_name = f'{split_tup[0]}-{type(self).__name__}_{self.angle}{split_tup[1]}'
         if save:
             cv2.imwrite(save_name, cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
         return img, bboxes, save_name
+
+class Augmentation():
+    def __init__(self, image_path, label_path):
+        self.image_path = image_path
+        self.label_path = label_path
+        self.image = np.asarray(cv2.imread(self.image_path))
+
+    def copy_label_content(self, new_label_path):
+        lines = open(self.label_path, "r").readlines()
+        with open(new_label_path, "w") as f:
+            for line in lines:
+                f.write(line)
+
+    def new_augemented_path(self, path, new_part):
+        return f'{".".join(path.split(".")[:-1])}-{new_part}.{path.split(".")[-1]}'
+    
+    def fix(self, num):
+        if int(num) - num == 0: num = int(num)
+        return num
+
+    def save(self, image, portion, part):
+        cv2.imwrite(self.new_augemented_path(path=self.image_path,
+                                                new_part=f"{part}_{portion}"), image)
+        self.copy_label_content(new_label_path=self.new_augemented_path(path=self.label_path,
+                                                                        new_part=f"{part}_{portion}"))
+
+class RandomValuedImpulseNoise(Augmentation):
+    def __init__(self, image_path, label_path, portion=None):
+        super().__init__(image_path, label_path)
+        if portion == None:
+            self.portion = round(np.random.uniform(low=0.001, high=0.1), 3)
+        else:
+            assert 0 <= portion <= 0.1, "Please use portion within [0, 0.1]"
+            self.portion = portion
+        self.thres = 1 - self.portion
+
+    def execute(self, save=True):
+        mask = np.random.rand(*self.image.shape[:2])
+        mask = np.concatenate([mask, mask, mask]).reshape(*mask.shape, 3)
+        self.image = np.where(self.portion*2>mask, np.random.randint(low=0, high=255, size=1, dtype=int), self.image) 
+        # self.image = np.where(self.portion>mask, 0, self.image)
+        # self.image = np.where(self.thres<mask, 255, self.image)
+        if save: self.save(image=self.image, 
+                           portion=self.portion*2, 
+                           part=type(self).__name__)
+
+class RandomSaltAndPepper(Augmentation):
+    def __init__(self, image_path, label_path, portion=None):
+        super().__init__(image_path, label_path)
+        if portion == None:
+            self.portion = round(np.random.uniform(low=0.001, high=0.1), 3)
+        else:
+            assert 0 <= portion <= 0.1, "Please use portion within [0, 0.1]"
+            self.portion = portion
+        self.thres = 1 - self.portion
+
+    def execute(self, save=True):
+        mask = np.random.rand(self.image.shape[0], self.image.shape[1])
+        mask = np.array([mask.T, mask.T, mask.T]).T
+        self.image = np.where(self.portion>mask, 0, self.image) 
+        self.image = np.where(self.thres<mask, 255, self.image)
+        if save: self.save(image=self.image, 
+                           portion=self.portion*2, 
+                           part=type(self).__name__)
+
+class RandomBrightness(Augmentation):
+    def __init__(self, image_path, label_path, level=None):
+        super().__init__(image_path, label_path)
+        if level == None:
+            self.level = round(np.random.uniform(low=0.1, high=2), 3)
+        else:
+            assert 0.1 <= level <= 2, "Please use level within [0.1, 1), (1, 2]"
+            self.level = round(float(level), 3)
+        
+        while self.level == 1:
+            self.level = round(np.random.uniform(low=0.1, high=2), 3)
+    def execute(self, save=True):
+        self.image = np.clip(a=(self.image * self.level).astype(int),
+                             a_min=0,
+                             a_max=255)
+        if save: self.save(image=self.image, 
+                           portion=self.level, 
+                           part=type(self).__name__)

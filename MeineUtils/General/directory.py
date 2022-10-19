@@ -14,5 +14,6 @@ def mkdir(dir_list):
                 dir = path_join(arr[:-1])
             else:
                 for i in range(len(dirs)):
-                    os.mkdir(path_join([dir, dirs[:i+1]]))
+                    if not os.path.exists(path_join([dir, dirs[:i+1]])):
+                        os.mkdir(path_join([dir, dirs[:i+1]]))
                 break

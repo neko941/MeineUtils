@@ -49,10 +49,10 @@ class BoundingBoxConverter():
         self.yBottomRights.extend([self.height - 1 if (y + h / 2) * self.height > self.height - 1 else int((y + h / 2) * self.height) + 1 for y, h in zip(self.yCenterScaled, self.heightScaled)])
 
     def PascalVOC_to_YOLO(self):
-        self.xCenterScaled.extend([((x1 + x2)/2.0 - 1) * (1./self.width) for x1, x2 in zip(self.xTopLefts, self.xBottomRights)])
-        self.yCenterScaled.extend([(x2 - x1) * (1./self.width) for x1, x2 in zip(self.xTopLefts, self.xBottomRights)])
-        self.widthScaled.extend([((y1 + y2)/2.0 - 1) * (1./self.height) for y1, y2 in zip(self.yTopLefts, self.yBottomRights)])
-        self.heightScaled.extend([(y2 - y1) * (1./self.width) for y1, y2 in zip(self.yTopLefts, self.yBottomRights)])
+        self.xCenterScaled.extend([((x1 + x2)/2.0 - 1) / self.width for x1, x2 in zip(self.xTopLefts, self.xBottomRights)])
+        self.widthScaled.extend([(x2 - x1) / self.width for x1, x2 in zip(self.xTopLefts, self.xBottomRights)])
+        self.yCenterScaled.extend([((y1 + y2)/2.0 - 1) / self.height for y1, y2 in zip(self.yTopLefts, self.yBottomRights)])
+        self.heightScaled.extend([(y2 - y1) /self.height for y1, y2 in zip(self.yTopLefts, self.yBottomRights)])
 
     def COCO_to_YOLO(self):
         self.xCenterScaled.extend([(2 * x1 + w)/(2 * self.width) for x1, w in zip(self.xTopLefts, self.widthBBoxes)])
@@ -75,6 +75,7 @@ class BoundingBoxConverter():
                     lines = np.array(bbox, dtype=float)
                 elif all(isinstance(i, str) for i in bbox):
                     lines = np.array([i.strip().split(" ") for i in bbox], dtype=float)
+                
 
             if len(lines[0]) == 4:
                 self.xCenterScaled.extend(lines[:, 0])

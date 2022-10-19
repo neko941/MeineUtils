@@ -13,7 +13,7 @@ DESCRIPTION = 'My utils'
 # Setting up
 setup(
     name="MeineUtils",
-    version='0.0.36',
+    version='0.0.45',
     author="neko941 (Khoa Nguyen)",
     url='https://github.com/neko941/MeineUtils',
     # author_email="",
@@ -21,7 +21,7 @@ setup(
     long_description_content_type="text/markdown",
     long_description=long_description,
     packages=find_packages(),
-    install_requires=['pandas', 'emot', 'textsearch', 'nltk'],
+    install_requires=['pandas', 'emot', 'textsearch', 'nltk', 'numpy', 'opencv-python'],
     keywords=['python'],
     classifiers=[
         "Development Status :: 1 - Planning",
